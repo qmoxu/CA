@@ -1,9 +1,26 @@
-.model small
+.model compact
 .stack 100h
 .code 
 main proc
-    mov ax, 1
-    xor ax,ax
+    mov ax, @data
+    mov ds, ax
+    mov dx, offset oneChar
+    mov ah, 09h
     int 21h
+    call read_next
+mov ah, 02h
+mov dl, '0'
+int 21h
+
 main endp
+
+read_next:
+    mov ah, 3Fh
+    mov bx, 0h  ; stdin handle
+    mov cx, 1   ; 1 byte to read
+    mov dx, offset oneChar   ; read to ds:dx 
+    int 21h   ;  ax = number of bytes read
+    ; do something with [oneChar]
+    or ax,ax
+    jnz read_next
 end main
