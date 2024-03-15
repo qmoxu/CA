@@ -1,26 +1,30 @@
-.model compact
-.stack 100h
-.code 
-main proc
-    mov ax, @data
-    mov ds, ax
-    mov dx, offset oneChar
-    mov ah, 09h
-    int 21h
-    call read_next
-mov ah, 02h
-mov dl, '0'
-int 21h
+.MODEL COMPACT
+.STACK 100H
+.DATA 
 
-main endp
+VAR  DB 100 DUP('$')
 
-read_next:
-    mov ah, 3Fh
-    mov bx, 0h  ; stdin handle
-    mov cx, 1   ; 1 byte to read
-    mov dx, offset oneChar   ; read to ds:dx 
-    int 21h   ;  ax = number of bytes read
-    ; do something with [oneChar]
-    or ax,ax
-    jnz read_next
-end main
+.CODE
+MAIN PROC
+MOV AX,@DATA
+MOV DS,AX
+MOV SI,OFFSET VAR   
+
+COME:   
+MOV AH,1
+INT 21H             
+
+CMP AL,13            
+
+
+MOV [SI],AL
+INC SI
+
+JMP COME 
+
+
+FINISH:
+MOV AH,4CH
+INT 21H   
+MAIN ENDP
+END MAIN 
