@@ -11,10 +11,8 @@ CODESEG
 proc MAIN
 MOV AX,@DATA
 MOV DS,AX
-
-mov di, offset big
-
-mov si, offset smallLine
+mov di, offset smallLine
+call StrLength
 MOV AH,4CH
 INT 21H   
 endp MAIN

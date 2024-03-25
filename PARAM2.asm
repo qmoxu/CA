@@ -17,13 +17,13 @@ main ENDP
 
 params PROC
     xor ch, ch
-    mov cl, es:[80h]   ; at offset 80h length of "args"
+    mov cl, es:[80h]  
     dec cl
     mov paramsLen, cl
 read_one:
-    test cl, cl        ; if cl == 0 then
+    test cl, cl        
     jz toRet
-    mov si, 81h        ; at offest 81h first char of "args"
+    mov si, 81h        
     add si, cx
     mov bx, offset params
     add bx, cx

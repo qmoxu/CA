@@ -1,17 +1,32 @@
-.model small
+.MODEL small
 .STACK 100h
 .DATA
-line_array DW 0,1,2,3
-count_array DW 3, 2, 6, 4
-count DW 4 
-.CODE 
-main proc 
-    mov ax, @data
+    input_cnt   db 20      
+    line_cnt    db 0      
+    inputs      dw 10 DUP(?) 
+
+.CODE
+main PROC
+    mov ax, @data       
     mov ds, ax
-    mov cx, word
+
+    mov cx, 10          
+    mov bx, offset inputs  
+    mov al, input_cnt    
+    mov ah, line_cnt   
+
+fill_array:
+    mov [bx], ax       
+    add bx, 2          
+    sub ah, 2          
+    adc al, 0          
+    loop fill_array     
+
+
+    mov cx, 10
 outerLoop:
     push cx
-    lea si, count_array
+    lea si, inputs
 innerLoop:
     mov ax, [si]
     cmp ax, [si+2]
@@ -23,7 +38,9 @@ nextStep:
     loop innerLoop
     pop cx
     loop outerLoop
-    mov ax, 4C00h 
+
+    mov ax, 4C00h      
     int 21h
-main endp
-end main
+main ENDP
+
+END main
