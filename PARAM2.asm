@@ -1,36 +1,38 @@
-IDEAL
-model small
-stack 100h
-dataseg
-string db 255 dup(0)
-lenght db 0
-handle dw 0h
-CODESEG
-proc main
-
-read_line:
-mov length, 0 ; reset length
-
-read_char:
-    mov ah, 3Fh ; read from file
-    mov bx, handle ; stdin handle
-    mov cx, 1   ; read 1 byte
-    mov dx, offset string   ; read into string
-    add dl, lenght       ; specify the position to store the next character
-    int 21h   
-    inc lenght   
-    mov bx, dx               ; move the address of the string to bx
-    cmp byte ptr [bx], 0Ah   ;chech if its end of file
-    je end ; end of line
-    cmp byte ptr [bx], 0Dh    ;chech if its end of file
-    je end ; end of line
-    or ax, ax                ; check if its a new line
-    jnz read_char 
-
-
-end:
-    mov ah, 4Ch
+.model small
+.stack 100h
+.data
+    parameters db 255 DUP ('$')
+    paramsLen db ?
+.code
+main PROC
+    mov ax, @data
+    mov ds, ax
+    call params
+    mov ah, 9
+    lea dx, params
     int 21h
-    
-main endp
-end main
+    mov ax, 4C00h
+    int 21h
+main ENDP
+
+params PROC
+    xor ch, ch
+    mov cl, es:[80h]   ; at offset 80h length of "args"
+    dec cl
+    mov paramsLen, cl
+read_one:
+    test cl, cl        ; if cl == 0 then
+    jz toRet
+    mov si, 81h        ; at offest 81h first char of "args"
+    add si, cx
+    mov bx, offset params
+    add bx, cx
+    mov al, es:[si]
+    mov byte ptr [bx-1], al
+    dec cl
+    jmp read_one
+toRet:
+    ret
+params ENDP
+
+END main
