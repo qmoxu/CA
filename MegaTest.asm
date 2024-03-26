@@ -9,23 +9,22 @@ main proc
 oneLine:
               mov ax, @data
               mov ds, ax
-              mov lineLenght, 0                ; reset length
+              mov lineLenght, 0                
     read_char:
-              mov ah, 3Fh                     ; read from file
-              mov bx, handle                  ; stdin handle
-              mov cx, 1                       ; read 1 byte
-              mov dx, offset line           ; read into line
+              mov ah, 3Fh                     ; читаємо з файлу
+              mov bx, handle                  ; вказуємо на файл
+              mov cx, 1                       ;1 байт
+              mov dx, offset line          
               add dl, lineLenght
-                           ; specify the position to store the next character
               int 21h
               inc lineLenght
     
-              mov bx, dx                      ; move the address of the line to bx
-              cmp byte ptr [bx], 0Ah          ;chech if its end of file
-              je  eof                       ; end of line
-              cmp byte ptr [bx], 0Dh          ;chech if its end of file
-              je  eof                         ; end of line
-              or  ax, ax                      ; check if its a new line
+              mov bx, dx                      ; вказуємо на зчитаний байт
+              cmp byte ptr [bx], 0Ah          
+              je  eof                       ; якщо кінець
+              cmp byte ptr [bx], 0Dh        
+              je  eof                         ; якщо кінець
+              or  ax, ax                      ; нова лінія
               jnz read_char
     eof: 
     mov ah, 40h
